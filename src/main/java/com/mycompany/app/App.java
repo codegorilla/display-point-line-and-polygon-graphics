@@ -18,7 +18,13 @@ package com.mycompany.app;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import com.esri.arcgisruntime.mapping.ArcGISMap;
@@ -30,7 +36,6 @@ public class App extends Application {
     private MapView mapView;
 
     public static void main(String[] args) {
-
         Application.launch(args);
     }
 
@@ -43,20 +48,59 @@ public class App extends Application {
         stage.setHeight(700);
         stage.show();
 
-        // create a JavaFX scene with a stack pane as the root node and add it to the scene
+        //Creating file menu
+        Menu file = new Menu("File");
+        //Creating file menu items
+        MenuItem item1 = new MenuItem("Add Files");
+        MenuItem item2 = new MenuItem("Start Converting");
+        MenuItem item3 = new MenuItem("Stop Converting");
+        MenuItem item4 = new MenuItem("Remove File");
+        MenuItem item5 = new MenuItem("Exit");
+        //Adding all the menu items to the file menu
+        file.getItems().addAll(item1, item2, item3, item4, item5);
+
+        MenuBar menuBar = new MenuBar();
+        //Adding all the menus to the menu bar
+        menuBar.getMenus().addAll(file);
+
+        // Status bar
+        Label status = new Label("Ready");
+        HBox statusBar = new HBox();
+        statusBar.getChildren().add(status);
+
+
+        // create a border pane as the root node
         StackPane stackPane = new StackPane();
-        Scene scene = new Scene(stackPane);
+        BorderPane borderPane = new BorderPane();
+        borderPane.setTop(menuBar);
+        borderPane.setCenter(stackPane);
+        borderPane.setBottom(statusBar);
+
+        // Create the scene
+        Scene scene = new Scene(borderPane);
         stage.setScene(scene);
 
         // create a MapView to display the map and add it to the stack pane
         mapView = new MapView();
         stackPane.getChildren().add(mapView);
-
+        setupMap();
         // create an ArcGISMap with the default imagery basemap
-        ArcGISMap map = new ArcGISMap(Basemap.createImagery());
+        //ArcGISMap map = new ArcGISMap(Basemap.createImagery());
 
         // display the map by setting the map on the map view
-        mapView.setMap(map);
+        //mapView.setMap(map);
+    }
+
+    private void setupMap() {
+        if (mapView != null) {
+            //Basemap.Type basemapType = Basemap.Type.STREETS_VECTOR;
+            Basemap.Type basemapType = Basemap.Type.DARK_GRAY_CANVAS_VECTOR;
+            double latitude = 34.02700;
+            double longitude = -118.80543;
+            int levelOfDetail = 12;
+            ArcGISMap map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
+            mapView.setMap(map);
+        }
     }
 
     /**
